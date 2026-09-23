@@ -1,0 +1,166 @@
+/* finger-skater css/style.css — lives pips, score/multiplier pills, toasts, floating text, SVG charge ring,
+   air-time bar, balance meter, twin touch zones, floating joystick, big jump button, cards. */
+:root {
+  --ink: #3b2e5a;
+  --purple: #6e5ac8;
+  --red: #ee4b5e;
+  --green: #3ddc84;
+  --yellow: #ffd45e;
+  --orange: #ff8a3d;
+  --bg: #b9a3e8;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body {
+  margin: 0; height: 100%; overflow: hidden; background: var(--bg);
+  font-family: "Trebuchet MS", "Avenir Next", system-ui, sans-serif; color: var(--ink);
+  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; touch-action: none;
+}
+canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+.hidden { display: none !important; }
+
+#hud { position: fixed; inset: 0; pointer-events: none; padding: max(10px, env(safe-area-inset-top)) 12px 12px; }
+.hud-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.pill {
+  background: #fffdf8ee; border: 3px solid var(--ink); border-radius: 999px; padding: 3px 14px;
+  font-weight: 900; font-size: 24px; box-shadow: 0 4px 0 var(--ink); min-width: 54px; text-align: center;
+}
+.pill.score { font-size: 28px; min-width: 110px; }
+.pill.mult { color: var(--purple); transition: transform .15s; }
+.pill.mult.hot { background: var(--yellow); transform: scale(1.12); }
+.sub { text-align: center; font-weight: 800; font-size: 14px; margin-top: 6px; text-shadow: 0 1px 0 #fff8; }
+
+.lives { display: flex; gap: 4px; }
+.life {
+  width: 30px; height: 30px; border-radius: 50%; border: 3px solid var(--ink); background: var(--red);
+  box-shadow: 0 3px 0 var(--ink); position: relative;
+}
+.life::after { /* tiny skateboard deck */
+  content: ""; position: absolute; left: 3px; right: 3px; top: 10px; height: 5px; border-radius: 3px; background: #fffdf8;
+}
+.life.lost { background: #d8cfe8; opacity: .55; }
+.life.pop { animation: pop .4s; }
+@keyframes pop { 40% { transform: scale(1.5); } }
+
+#toasts { position: absolute; left: 0; right: 0; top: 28%; text-align: center; }
+.toast {
+  display: inline-block; margin: 3px; padding: 5px 14px; border-radius: 12px; font-weight: 900;
+  font-size: 22px; background: var(--yellow); border: 3px solid var(--ink); box-shadow: 0 4px 0 var(--ink);
+  animation: toast 1.5s ease-out forwards;
+}
+.toast.good { background: #b9f5cf; } .toast.bad { background: #ffc4cc; } .toast.big { font-size: 30px; }
+@keyframes toast { 0% { transform: scale(.4); opacity: 0 } 12% { transform: scale(1.1); opacity: 1 }
+  20% { transform: scale(1) } 80% { opacity: 1 } 100% { transform: translateY(-30px); opacity: 0 } }
+
+.float {
+  position: absolute; transform: translate(-50%, -50%); font-weight: 900; font-size: 18px; white-space: nowrap;
+  color: #fff; -webkit-text-stroke: 1px var(--ink); text-shadow: 0 2px 0 var(--ink);
+  animation: floatUp 1s ease-out forwards;
+}
+@keyframes floatUp { from { opacity: 1; margin-top: 0 } to { opacity: 0; margin-top: -48px } }
+
+.charge { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); opacity: 0; transition: opacity .1s; }
+.charge.on { opacity: 1; }
+.charge circle { fill: none; stroke-width: 6; }
+.charge .track { stroke: #fffdf8aa; }
+.charge .fill { stroke: var(--orange); stroke-linecap: round; stroke-dasharray: 0 100; transform: rotate(-90deg); }
+.charge.full .fill { stroke: var(--green); }
+
+.air {
+  position: absolute; left: 0; top: 0; transform: translate(-50%, -100%); width: 120px; opacity: 0;
+  transition: opacity .1s; text-align: center; font-weight: 900;
+}
+.air.on { opacity: 1; }
+.air-lbl { display: flex; justify-content: center; gap: 6px; font-size: 14px; color: #fff;
+  -webkit-text-stroke: .6px var(--ink); text-shadow: 0 2px 0 var(--ink); white-space: nowrap; }
+#air-trick { color: var(--yellow); }
+.air-bar { height: 9px; margin-top: 3px; border: 2px solid var(--ink); border-radius: 6px; background: #fffdf8cc; overflow: hidden; }
+#air-fill { height: 100%; width: 0; background: var(--green); }
+.air.warn #air-fill { background: var(--red); }
+.air.warn.grab .air-lbl { animation: pulse .18s infinite alternate; }
+@keyframes pulse { to { transform: scale(1.15); } }
+
+.balance {
+  position: absolute; left: 0; top: 0; transform: translate(-50%, -100%); width: 130px; opacity: 0;
+  transition: opacity .1s; text-align: center;
+}
+.balance.on { opacity: 1; }
+.bal-lbl { font-weight: 900; font-size: 13px; color: #8ff0ff; -webkit-text-stroke: .6px var(--ink);
+  text-shadow: 0 2px 0 var(--ink); white-space: nowrap; }
+.bal-bar { position: relative; height: 14px; margin-top: 3px; border: 2px solid var(--ink); border-radius: 8px;
+  background: linear-gradient(90deg, var(--red), #ffd45e 25%, #fffdf8 40%, #fffdf8 60%, #ffd45e 75%, var(--red)); }
+.bal-safe { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 2px; background: var(--ink); }
+.bal-needle { position: absolute; top: -5px; width: 8px; height: 20px; margin-left: -4px; border-radius: 4px;
+  background: var(--purple); border: 2px solid var(--ink); }
+.balance.warn .bal-bar { animation: pulse .15s infinite alternate; }
+
+.mini {
+  pointer-events: auto; position: absolute; right: 12px; top: calc(max(10px, env(safe-area-inset-top)) + 64px);
+  width: 44px; height: 44px; border-radius: 50%; border: 3px solid var(--ink);
+  background: #fffdf8; font-weight: 900; font-size: 16px; color: var(--ink); box-shadow: 0 3px 0 var(--ink);
+}
+.mini.cam { top: calc(max(10px, env(safe-area-inset-top)) + 116px); font-size: 18px; }
+.mini:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+
+/* Full-height hit zones: the whole left side steers, the whole right side is the
+   jump/trick button. The visible joystick and button graphics are decorative
+   (pointer-events: none) and float on top of these. */
+#joy-zone, #jump-zone { position: absolute; top: 0; bottom: 0; width: 50%; pointer-events: auto; touch-action: none; }
+#joy-zone { left: 0; }
+#jump-zone { right: 0; }
+
+#joystick {
+  pointer-events: none; position: absolute; left: 0; top: 0; width: 132px; height: 132px;
+  transform: translate(-50%, -50%); opacity: 0; transition: opacity .12s;
+}
+#joystick.active { opacity: 1; }
+.joy-base {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: #fffdf866; border: 3px solid var(--ink); box-shadow: 0 4px 0 #3b2e5a55;
+}
+.joy-stick {
+  position: absolute; left: 50%; top: 50%; width: 58px; height: 58px; margin: -29px 0 0 -29px;
+  border-radius: 50%; background: #fffdf8; border: 3px solid var(--ink); box-shadow: 0 3px 0 var(--ink);
+}
+#joystick.active .joy-stick { background: #ffefb0; }
+
+#jump-btn {
+  pointer-events: none; position: absolute;
+  right: max(20px, env(safe-area-inset-right) + 12px);
+  bottom: max(28px, env(safe-area-inset-bottom) + 20px);
+  width: 92px; height: 92px; border-radius: 50%; border: 4px solid var(--ink);
+  background: var(--yellow); color: var(--ink); font-size: 30px; font-weight: 900;
+  box-shadow: 0 5px 0 var(--ink); display: flex; align-items: center; justify-content: center;
+}
+#jump-btn.pressed { transform: translateY(3px); box-shadow: 0 2px 0 var(--ink); background: var(--orange); }
+#jump-btn.full { background: var(--green); }
+
+.screen {
+  position: fixed; inset: 0; display: flex; align-items: safe center; justify-content: center;
+  background: radial-gradient(circle at 50% 40%, #e9ddffaa, #b9a3e8dd); padding: 16px;
+  overflow-y: auto; touch-action: pan-y;
+}
+.card { margin: auto 0; }
+@media (max-height: 640px) {
+  .card { padding: 14px 14px 10px; }
+  .card h1 { font-size: 34px; }
+  .card .how { font-size: 12px; line-height: 1.35; margin: 6px 0 10px; }
+  .card button { font-size: 19px; padding: 9px 22px; }
+}
+.card {
+  background: #fffdf8; border: 4px solid var(--ink); border-radius: 22px; box-shadow: 0 8px 0 var(--ink);
+  padding: 22px 20px 16px; max-width: 400px; width: 100%; text-align: center;
+}
+.card h1 { margin: 0; font-size: 44px; line-height: .95; letter-spacing: 1px; color: var(--purple); }
+.card h1 span { color: var(--orange); }
+.card .tag { font-weight: 700; margin: 10px 0; }
+.card .how { text-align: left; padding-left: 18px; margin: 8px 0 14px; font-size: 13.5px; line-height: 1.45; }
+.card .o { color: #e07b12; } .card .r { color: var(--red); }
+.card button {
+  font: inherit; font-weight: 900; font-size: 22px; padding: 12px 28px; border-radius: 16px;
+  border: 3px solid var(--ink); background: var(--yellow); color: var(--ink); box-shadow: 0 5px 0 var(--ink);
+}
+.card button:disabled { opacity: .6; }
+.card button:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--ink); }
+.card .small { font-size: 12px; opacity: .7; min-height: 1em; }
+.card .stats { font-size: 18px; font-weight: 800; line-height: 1.6; }
+.card .best { color: var(--purple); }

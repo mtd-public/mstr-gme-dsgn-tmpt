@@ -1,0 +1,1082 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&family=Press+Start+2P&display=swap');
+
+:root {
+  --bg: #eaf4f8;
+  --panel: #ffffff;
+  --board-bg: #1f6fa8;
+  --line: #d7e6ee;
+  --text: #17293a;
+  --muted: #5d7a90;
+  --accent: #ff9a4d;
+  --gold: #ffd166;
+  --btn-bg: #f0f6f9;
+  --btn-bg-hover: #e2eef4;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-arcade: 'Press Start 2P', var(--font-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font-family: inherit;
+}
+
+.app {
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Topbar ---------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: env(safe-area-inset-top, 0px) 16px 0;
+  padding-bottom: 10px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+
+.wordmark {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.topbar__stats {
+  display: flex;
+  gap: 16px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.topbar__stat .stat__label {
+  margin-right: 4px;
+}
+
+.topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---------- Options menu ---------- */
+.options {
+  position: relative;
+}
+
+.options__trigger {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--btn-bg);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.options__trigger:hover,
+.options__trigger[aria-expanded='true'] {
+  background: var(--btn-bg-hover);
+  color: var(--text);
+}
+
+.options__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 260px;
+  max-height: min(80vh, 560px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 8px 24px -8px rgba(20, 22, 30, 0.35);
+  z-index: 10;
+}
+
+.options__title {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.options__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.options__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.options__keys {
+  display: flex;
+  gap: 4px;
+  flex: none;
+}
+
+.options__key {
+  min-width: 20px;
+  padding: 2px 6px;
+  border-radius: 5px;
+  border: 1px solid var(--line);
+  background: var(--btn-bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-align: center;
+}
+
+.options__label {
+  font-size: 12.5px;
+  color: var(--text);
+  text-align: right;
+}
+
+/* art style + palette picker */
+.options__segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 9px;
+  background: var(--btn-bg);
+  border: 1px solid var(--line);
+}
+
+.options__segment {
+  border: 0;
+  border-radius: 6px;
+  padding: 6px 8px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.options__segment[aria-checked='true'] {
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(20, 22, 30, 0.18);
+}
+
+.options__palettes {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 5px;
+}
+
+.options__palette {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2px;
+  height: 30px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.options__palette span {
+  width: 6px;
+  height: 12px;
+}
+
+.options__palette[aria-checked='true'] {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.options__trigger:focus-visible,
+.options__segment:focus-visible,
+.options__palette:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.options__current {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text);
+}
+
+.options__check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+/* ---------- Achievements ---------- */
+.achievements {
+  position: relative;
+}
+
+.achievements__trigger {
+  height: 28px;
+  padding: 0 9px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--btn-bg);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.achievements__trigger:hover,
+.achievements__trigger[aria-expanded='true'] {
+  background: var(--btn-bg-hover);
+  color: var(--text);
+}
+
+.achievements__count {
+  line-height: 1;
+}
+
+.achievements__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: min(280px, calc(100vw - 32px));
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 8px 24px -8px rgba(20, 22, 30, 0.35);
+  z-index: 10;
+}
+
+.achievements__title {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.achievements__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.achievements__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.achievements__badge {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--gold);
+}
+
+.achievements__item:not(.achievements__item--done) .achievements__badge {
+  background: var(--btn-bg);
+}
+
+.achievements__item--done .achievements__badge {
+  background: #fff6df;
+  border-color: var(--gold);
+}
+
+.achievements__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.achievements__name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.achievements__item:not(.achievements__item--done) .achievements__name {
+  color: var(--muted);
+}
+
+.achievements__desc {
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* ---------- Achievement unlock toasts ---------- */
+.achievement-toasts {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 59px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.achievement-toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: #17293a;
+  color: #eaf4f8;
+  box-shadow: 0 10px 28px -8px rgba(20, 22, 30, 0.5);
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.achievement-toast__icon {
+  flex: none;
+  color: var(--gold);
+  display: flex;
+}
+
+.achievement-toast__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.achievement-toast__label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9db3c4;
+}
+
+.achievement-toast__name {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ---------- Layout ---------- */
+/* The topbar keeps its measured height; the play area is the only thing
+   that flexes, and min-height:0 lets it shrink rather than overflow. */
+.topbar {
+  flex: none;
+}
+
+.layout {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+}
+
+.board-shell {
+  position: relative;
+  aspect-ratio: 1 / 2;
+  flex: 1;
+  min-height: 0;
+  max-height: 640px;
+  max-width: 94vw;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(20, 22, 30, 0.05), 0 12px 32px -12px rgba(20, 22, 30, 0.25);
+  /* Steering taps/swipes drive the board here — don't let the browser
+     scroll/zoom on them. */
+  touch-action: none;
+}
+
+/* ---------- Depth badge (sits on the board, every layout) ---------- */
+.depth-badge {
+  position: absolute;
+  top: calc(10px + env(safe-area-inset-top, 0px));
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  padding: 6px 11px 7px;
+  border-radius: 10px;
+  background: rgba(8, 20, 33, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(3px);
+  pointer-events: none;
+}
+
+.depth-badge__label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1;
+}
+
+.depth-badge__value {
+  font-family: var(--font-mono);
+  font-size: 19px;
+  font-weight: 700;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+/* ---------- Boss gauge: left edge, every layout ----------
+   A slim thermometer: the current leg's start at the top, the next boss at
+   the bulb, the sub marker sliding down the tube (its `top` and the fill's
+   `height` are percentages set in BossGauge.tsx). Anchored top and bottom
+   so it scales with the board's height, stopping above the lower half of
+   the board where the boss itself fights. */
+.boss-gauge {
+  position: absolute;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  bottom: 56.5%;
+  left: 8px;
+  width: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 0 7px;
+  border-radius: 12px;
+  background: rgba(8, 20, 33, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(3px);
+  pointer-events: none;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  --gauge-accent: #ff5a5a;
+  --gauge-accent-soft: rgba(255, 90, 90, 0.35);
+}
+
+.boss-gauge--kracken {
+  --gauge-accent: #ff8c1a;
+  --gauge-accent-soft: rgba(255, 140, 26, 0.35);
+}
+
+.boss-gauge__start,
+.boss-gauge__boss-at {
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.boss-gauge__start {
+  margin-bottom: 5px;
+}
+
+.boss-gauge__tube {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 40px;
+  width: 8px;
+  border-radius: 4px 4px 0 0;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-bottom: none;
+}
+
+.boss-gauge__fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(180deg, rgba(120, 220, 255, 0.7), var(--gauge-accent));
+  transition: height 0.4s ease-out;
+}
+
+.boss-gauge__marker {
+  position: absolute;
+  left: 50%;
+  transform: translate(-10px, -50%);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  transition: top 0.4s ease-out;
+}
+
+.boss-gauge__sub {
+  fill: #ffd166;
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.6));
+  flex-shrink: 0;
+}
+
+.boss-gauge__sub-port {
+  fill: #1f6fa8;
+}
+
+.boss-gauge__to-go {
+  padding: 1px 4px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #ffffff;
+  background: rgba(8, 20, 33, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  white-space: nowrap;
+}
+
+.boss-gauge__bulb {
+  width: 16px;
+  height: 16px;
+  margin-top: -2px;
+  border-radius: 50%;
+  background: var(--gauge-accent);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 6px var(--gauge-accent-soft);
+  flex-shrink: 0;
+}
+
+.boss-gauge__boss {
+  margin-top: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--gauge-accent);
+  line-height: 1.2;
+}
+
+.boss-gauge--kracken .boss-gauge__boss {
+  font-size: 7px;
+  letter-spacing: 0;
+}
+
+.boss-gauge--fight .boss-gauge__bulb {
+  animation: boss-gauge-pulse 0.9s ease-in-out infinite;
+}
+
+.boss-gauge--fight .boss-gauge__to-go {
+  color: #ffd7d7;
+  border-color: var(--gauge-accent);
+}
+
+@keyframes boss-gauge-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 4px var(--gauge-accent-soft);
+  }
+  50% {
+    box-shadow: 0 0 14px var(--gauge-accent);
+  }
+}
+
+/* ---------- Weapon badge: follows the sub's x, sits just above it ----------
+   Anchored by `bottom`, not `top`, so its lower edge stays a fixed distance
+   above the sub's screen row (SUB_Y / BOARD_H in physics.ts, 22% — hence
+   the 78% here) no matter how many rows are showing; a `top`-anchored box
+   instead grows downward as the second (laser) row appears, creeping back
+   over the sub's light pool. `left` is a percentage set every frame in
+   WeaponBadge.tsx from the sub's actual x, with the translateX here
+   centering the badge on that point rather than anchoring an edge. */
+.weapon-badge {
+  position: absolute;
+  bottom: calc(78% + 70px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.weapon-badge__row {
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  backdrop-filter: blur(3px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.weapon-badge__row--shotgun {
+  background: rgba(216, 138, 46, 0.5);
+  color: #ffe27a;
+}
+
+.weapon-badge__row--laser {
+  background: rgba(122, 76, 217, 0.5);
+  color: #d9baff;
+  animation: weapon-pulse 1s ease-in-out infinite;
+}
+
+@keyframes weapon-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* ---------- Boss banner: top-center, only while a boss is alive ---------- */
+.boss-banner {
+  position: absolute;
+  top: calc(10px + env(safe-area-inset-top, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 14px 5px 8px;
+  border-radius: 999px;
+  background: rgba(46, 6, 10, 0.55);
+  border: 1px solid rgba(255, 90, 90, 0.45);
+  backdrop-filter: blur(3px);
+  pointer-events: none;
+  animation: boss-banner-pulse 1.3s ease-in-out infinite;
+}
+
+.boss-banner__label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffd7d7;
+  white-space: nowrap;
+}
+
+.boss-banner__ring {
+  transform: rotate(-90deg);
+  flex-shrink: 0;
+}
+
+.boss-banner__ring-bg,
+.boss-banner__ring-fg {
+  fill: none;
+  stroke-width: 4;
+}
+
+.boss-banner__ring-bg {
+  stroke: rgba(255, 255, 255, 0.2);
+}
+
+.boss-banner__ring-fg {
+  stroke: #ff3b3b;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.25s ease-out;
+}
+
+@keyframes boss-banner-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(255, 59, 59, 0);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(255, 59, 59, 0.55);
+  }
+}
+
+/* The Kracken: same banner, an orange accent in place of the usual red. */
+.boss-banner--kracken {
+  background: rgba(58, 26, 3, 0.55);
+  border-color: rgba(255, 154, 40, 0.55);
+  animation-name: boss-banner-pulse-kracken;
+}
+
+.boss-banner--kracken .boss-banner__label {
+  color: #ffd9a0;
+}
+
+.boss-banner--kracken .boss-banner__ring-fg {
+  stroke: #ff8c1a;
+}
+
+@keyframes boss-banner-pulse-kracken {
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(255, 140, 26, 0);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(255, 140, 26, 0.6);
+  }
+}
+
+.game-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--board-bg);
+  cursor: pointer;
+  touch-action: none;
+  /* The renderer draws at a fixed 256x512 internal resolution; keep the
+     upscale chunky instead of letting the browser smooth it. */
+  image-rendering: pixelated;
+}
+
+/* ---------- Stats sidebar (score/lives + best) ---------- */
+.stats-sidebar {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.stats-sidebar__section {
+  flex: none;
+  width: 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stats-sidebar__stats {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.stat__value--best {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Score already shows in the topbar on the compact strip. */
+.stat--duplicate {
+  display: none;
+}
+
+.stat__label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+
+.stat__value {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
+}
+
+.btn {
+  border: 1px solid var(--line);
+  background: var(--btn-bg);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 14px 0;
+  flex: 1;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--btn-bg-hover);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: var(--line);
+  font-size: 13px;
+  padding: 8px 14px;
+  flex: none;
+  font-family: var(--font-mono);
+}
+
+.btn--primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 12px 22px;
+  flex: none;
+}
+
+.btn--primary:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+/* ---------- Overlay ---------- */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 22, 30, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.overlay__card {
+  background: var(--panel);
+  border-radius: 14px;
+  padding: 28px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 300px;
+}
+
+.overlay__card h2 {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 20px;
+}
+
+.overlay__card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ---------- Title screen: card-free, sits directly over the self-playing
+   demo gameplay behind the .overlay scrim ---------- */
+.title-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+
+.title-screen__logo {
+  margin: 0;
+  font-family: var(--font-arcade);
+  font-size: clamp(22px, 6vw, 34px);
+  line-height: 1.5;
+  text-align: center;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.35), 0 0 18px rgba(0, 0, 0, 0.4);
+}
+
+.title-screen .btn--primary {
+  font-family: var(--font-arcade);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  padding: 16px 26px;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25), 0 10px 24px -8px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- Immersive portrait: phone and tablet held upright ----------
+   Everything below the topbar is board. Swiping it steers, tapping it
+   fires, and depth/weapon status ride in their badges, so the stats card
+   has nothing left to say — it comes back only on the wide layout below.
+   The two queries are mutually exclusive (this one needs portrait or a
+   narrow window; that one needs landscape and a wide one), so source order
+   between them is moot. */
+@media (orientation: portrait) and (pointer: coarse), (max-width: 839px) {
+  .layout {
+    padding: 0;
+    gap: 0;
+  }
+
+  .board-shell {
+    aspect-ratio: auto;
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: none;
+    max-height: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .stats-sidebar {
+    display: none;
+  }
+}
+
+/* ---------- Wide layout: desktop and tablet landscape ----------
+   Both get the identical two-column arrangement — the game area centered
+   and as large as the window allows, and the score/lives card sized to its
+   own content in the top right rather than stretched down the column. Fills
+   the window exactly, no page scroll. Gated on pointer:fine for desktop, or
+   pointer:coarse + landscape for tablet — a touch tablet in landscape can
+   easily be wider than 880px, so width alone can't tell it apart from
+   desktop. The board's swipe-to-steer/tap-to-fire handlers work the same
+   way for a mouse (drag vs. click), so no separate desktop control is
+   needed here beyond the keyboard, which always works too. */
+@media (pointer: fine) and (min-width: 880px), (pointer: coarse) and (orientation: landscape) and (min-width: 840px) {
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 200px;
+    grid-template-rows: minmax(0, 1fr);
+    align-items: center;
+    justify-items: center;
+    gap: 16px;
+    min-height: 0;
+    padding: 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Height-driven, not width-driven: the board takes the row it is given and
+     derives its width from the aspect ratio, so a short landscape window
+     shrinks the board instead of pushing the footer out of view. */
+  .board-shell {
+    grid-column: 1;
+    grid-row: 1;
+    flex: none;
+    aspect-ratio: 1 / 2;
+    height: 100%;
+    width: auto;
+    max-height: 100%;
+    max-width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(20, 22, 30, 0.05), 0 12px 32px -12px rgba(20, 22, 30, 0.25);
+  }
+
+  .depth-badge {
+    top: 10px;
+  }
+
+  .stats-sidebar {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    align-self: start;
+    width: 100%;
+    justify-self: stretch;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stats-sidebar__section {
+    width: auto;
+  }
+
+  .stats-sidebar__stats {
+    flex-direction: column;
+  }
+
+  .stat--duplicate {
+    display: flex;
+  }
+}
+
+/* ---------- Short landscape windows ----------
+   Phones and small tablets turned sideways have very little vertical room, so
+   the chrome tightens up to leave the board as much of it as possible. */
+@media (orientation: landscape) and (max-height: 560px) {
+  .layout {
+    padding: 10px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    gap: 10px;
+  }
+
+  .topbar {
+    padding-bottom: 6px;
+  }
+
+  .stats-sidebar {
+    padding: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

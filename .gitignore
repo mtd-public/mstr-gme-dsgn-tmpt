@@ -1,0 +1,8 @@
+node_modules/
+dist/
+artifact/
+.artifact-build/
+shots/
+*.log
+.DS_Store
+*.tsbuildinfo

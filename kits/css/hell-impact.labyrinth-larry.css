@@ -1,0 +1,84 @@
+/* labyrinth-larry css/style.css — hellish Impact chrome: big glowing timer (low-time pulse), panels, toasts. */
+:root {
+  --ember: #ff6a1f;
+  --blood: #b3100f;
+  --bone: #f1e3c6;
+  --ink: #120404;
+  --panel: rgba(22, 6, 5, 0.88);
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body {
+  margin: 0; height: 100%; overflow: hidden; background: var(--ink); color: var(--bone);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  user-select: none; -webkit-user-select: none; overscroll-behavior: none;
+}
+canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+#overlay { pointer-events: none; }
+.hidden { display: none !important; }
+
+#hud { position: fixed; inset: 0; pointer-events: none; }
+.hud-top {
+  position: absolute; top: max(10px, env(safe-area-inset-top)); left: 12px; right: 12px;
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.score, .level {
+  display: flex; flex-direction: column; background: var(--panel); border: 2px solid #5a1a10;
+  border-radius: 6px; padding: 4px 10px; font-weight: 800; font-size: 18px; min-width: 76px;
+}
+.level { text-align: right; }
+.lbl { font-size: 10px; letter-spacing: 2px; color: var(--ember); }
+.time {
+  font: 900 54px/1 Impact, "Arial Black", sans-serif; color: #ffd27a; letter-spacing: 2px;
+  text-shadow: 0 0 12px #ff3a00, 3px 3px 0 #3a0804;
+}
+.time.low { color: #ff3a2a; animation: pulse 0.5s infinite alternate; }
+@keyframes pulse { to { transform: scale(1.12); } }
+
+.corner-btns {
+  position: absolute; right: 12px; top: calc(max(10px, env(safe-area-inset-top)) + 64px);
+  display: flex; flex-direction: column; gap: 8px; pointer-events: auto;
+}
+.mini {
+  width: 42px; height: 42px; border-radius: 50%; border: 2px solid #5a1a10; background: var(--panel);
+  color: var(--bone); font-weight: 900; font-size: 16px; cursor: pointer;
+}
+.mini.off { opacity: 0.45; }
+
+.toast {
+  position: absolute; left: 50%; top: 30%; transform: translate(-50%, -50%); text-align: center;
+  font: 900 34px/1.1 Impact, "Arial Black", sans-serif; color: #ffd27a; letter-spacing: 1px;
+  text-shadow: 0 0 14px #ff3a00, 3px 3px 0 #3a0804; opacity: 0; transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; }
+.toast.death { color: #ff4a3a; font-size: 40px; }
+.toast small { display: block; font: 700 14px system-ui, sans-serif; color: var(--bone); text-shadow: 0 1px 3px #000; }
+
+.screen {
+  position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 16px;
+  background: radial-gradient(ellipse at center, rgba(40, 4, 2, 0.55), rgba(8, 0, 0, 0.9));
+}
+.card {
+  width: min(420px, 100%); max-height: 100%; overflow-y: auto; text-align: center;
+  background: var(--panel); border: 2px solid #6a1c10; border-radius: 10px; padding: 22px 20px;
+  box-shadow: 0 0 40px rgba(255, 60, 0, 0.25), inset 0 0 30px rgba(0, 0, 0, 0.6);
+}
+.card h1 {
+  margin: 0 0 6px; font: 900 44px/0.95 Impact, "Arial Black", sans-serif; color: #ffd27a; letter-spacing: 2px;
+  text-shadow: 0 0 18px #ff3a00, 4px 4px 0 #3a0804;
+}
+.card h1 span { color: var(--blood); font-size: 58px; text-shadow: 0 0 18px #ff2000, 4px 4px 0 #000; }
+.card h2 { margin: 0 0 4px; font: 900 30px Impact, "Arial Black", sans-serif; color: #ffd27a; letter-spacing: 1px; }
+.card .tag { margin: 8px 0 14px; color: #e9c9a0; font-style: italic; }
+.card ul { text-align: left; margin: 0 0 16px; padding-left: 18px; line-height: 1.5; font-size: 14px; color: #e9d7bd; }
+.card .stats { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; text-align: left; margin: 10px 0 16px; font-size: 16px; }
+.card .stats b { color: #ffd27a; text-align: right; }
+.btn {
+  display: inline-block; border: 0; border-radius: 8px; padding: 14px 34px; cursor: pointer; pointer-events: auto;
+  font: 900 22px Impact, "Arial Black", sans-serif; letter-spacing: 2px; color: #fff4e0;
+  background: linear-gradient(#d0301a, #7a0c06); box-shadow: 0 4px 0 #3a0804, 0 0 20px rgba(255, 60, 0, 0.45);
+}
+.btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #3a0804; }
+.btn.ghost { background: transparent; border: 2px solid #6a1c10; box-shadow: none; font-size: 16px; padding: 10px 22px; margin-top: 10px; }
+.levels { display: flex; gap: 6px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+.levels button { width: 40px; height: 40px; border-radius: 6px; border: 2px solid #6a1c10; background: #2a0a06; color: var(--bone); font-weight: 900; }

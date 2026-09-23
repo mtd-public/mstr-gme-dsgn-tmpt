@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#b9a3e8">
+  <title>Finger Skater</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+    { "imports": { "three": "./js/vendor/three.module.min.js" } }
+  </script>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <div id="hud" class="hidden">
+    <div class="hud-top">
+      <div class="lives" id="lives" aria-label="Hits left"></div>
+      <div class="pill score"><span class="val" id="score">0</span></div>
+      <div class="pill mult" id="mult-pill"><span class="val" id="mult">x1</span></div>
+    </div>
+    <div class="sub"><span id="dist">0 m</span></div>
+    <div id="toasts"></div>
+    <div id="floats"></div>
+    <svg id="charge" class="charge" viewBox="-30 -30 60 60" width="64" height="64" aria-hidden="true">
+      <circle r="24" class="track"/>
+      <circle r="24" class="fill" id="charge-fill" pathLength="100"/>
+    </svg>
+    <div id="balance" class="balance" aria-hidden="true">
+      <div class="bal-lbl" id="bal-lbl"></div>
+      <div class="bal-bar"><div class="bal-safe"></div><div id="bal-needle" class="bal-needle"></div></div>
+    </div>
+    <div id="air" class="air" aria-hidden="true">
+      <div class="air-lbl"><span id="air-trick"></span><span id="air-time">0.0s</span></div>
+      <div class="air-bar"><div id="air-fill"></div></div>
+    </div>
+    <div id="joy-zone" aria-hidden="true"></div>
+    <div id="jump-zone" aria-hidden="true"></div>
+    <button id="pause-btn" class="mini" aria-label="Pause">II</button>
+    <button id="cam-btn" class="mini cam" aria-label="Change camera view" title="Camera view (C)">🎥</button>
+    <div id="joystick" aria-hidden="true">
+      <div class="joy-base"></div>
+      <div class="joy-stick"></div>
+    </div>
+    <div id="jump-btn" aria-hidden="true">
+      <span>▲</span>
+    </div>
+  </div>
+
+  <div id="screen" class="screen">
+    <div class="card">
+      <h1>FINGER<br><span>SKATER</span></h1>
+      <p class="tag">Weave the street. Don't bail.</p>
+      <ul class="how">
+        <li>Touch anywhere on the <b>left</b> to steer — the stick appears under your thumb</li>
+        <li><b>Hold</b> anywhere on the <b>right</b> to charge an ollie, <b>release</b> to jump — longer hold, bigger air (and a little extra speed while held)</li>
+        <li>In the air, <b>hold</b> the right side again to grab the board for trick points — <b class="r">let go before you land</b> or you eat it</li>
+        <li>Hit <b class="o">ramps</b> (kicker, ramp, MEGA) for big air, hop obstacles and near-miss cars for bonus points</li>
+        <li>Three hits and you <b class="r">bail</b>. Stay clean to build your multiplier</li>
+        <li>Land lined up on a <b class="o">rail</b> to grind — steer left/right to keep your balance, tap the right side to pop off</li>
+        <li>Desktop: ←/→ to weave / balance, hold Space to charge, release to jump · C: camera</li>
+      </ul>
+      <button id="start-btn" disabled>Loading…</button>
+      <p class="small" id="load-status"></p>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

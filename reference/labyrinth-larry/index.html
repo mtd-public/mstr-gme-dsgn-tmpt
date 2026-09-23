@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#120404">
+  <title>Labyrinth Larry</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+    { "imports": { "three": "./js/vendor/three.module.min.js" } }
+  </script>
+</head>
+<body>
+  <canvas id="game"></canvas>
+  <canvas id="overlay"></canvas>
+
+  <div id="hud" class="hidden">
+    <div class="hud-top">
+      <div class="score"><span class="lbl">SCORE</span><span id="hud-score">0</span></div>
+      <div id="hud-time" class="time">60</div>
+      <div class="level"><span class="lbl">CIRCLE</span><span id="hud-level">1</span></div>
+    </div>
+    <div class="corner-btns">
+      <button id="pause-btn" class="mini" aria-label="Pause">II</button>
+      <button id="mute-btn" class="mini" aria-label="Mute sound">♪</button>
+    </div>
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <div id="screen" class="screen">
+    <div class="card" id="card"></div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

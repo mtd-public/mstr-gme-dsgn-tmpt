@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#2e2669" />
+<title>Space Lion</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="app">
+    <canvas id="webgl"></canvas>
+    <canvas id="hud"></canvas>
+    <div id="input-layer"></div>
+
+    <button id="btn-pause" class="icon-btn hidden" aria-label="Pause">&#10073;&#10073;</button>
+
+    <!-- Paused screen -->
+    <div id="screen-paused" class="screen hidden">
+      <div class="card">
+        <h1 class="title">PAUSED</h1>
+        <button id="btn-resume" class="btn">RESUME</button>
+      </div>
+    </div>
+
+    <!-- Start screen -->
+    <div id="screen-start" class="screen">
+      <div class="card">
+        <h1 class="title">SPACE<br/><span class="accent">LION</span></h1>
+        <p class="subtitle">Hunt the towers. Grab the gold. Fly the rings.<br/>Break the Sentinel. Slay the Lion.</p>
+        <div class="howto">
+          <div><span class="key">Thumbstick</span> steer your ship</div>
+          <div><span class="key">Tap anywhere</span> fire!</div>
+        </div>
+        <button id="btn-start" class="btn">TAP TO LAUNCH</button>
+      </div>
+    </div>
+
+    <!-- Game over screen -->
+    <div id="screen-gameover" class="screen hidden">
+      <div class="card">
+        <h1 class="title over">SHIP LOST</h1>
+        <p class="subtitle" id="gameover-stats"></p>
+        <button id="btn-retry" class="btn">TRY AGAIN</button>
+      </div>
+    </div>
+
+    <!-- Victory screen -->
+    <div id="screen-victory" class="screen hidden">
+      <div class="card">
+        <h1 class="title win">VICTORY</h1>
+        <p class="subtitle">The Space Lion falls. The sector is free.</p>
+        <p class="subtitle" id="victory-stats"></p>
+        <button id="btn-play-again" class="btn">PLAY AGAIN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- three.js r136 (classic global build, vendored) -->
+  <script src="js/vendor/three.min.js"></script>
+  <!-- procedural toy-style ship/tower/boss asset factory -->
+  <script src="js/vendor/space-assets.js"></script>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

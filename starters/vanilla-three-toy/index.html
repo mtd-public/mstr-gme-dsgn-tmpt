@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#b9a3e8">
+  <title>Gem Rush — toy starter</title>
+  <link rel="icon" href="data:,">  <!-- no favicon request / console 404 -->
+  <!-- Guard CSS first so the game CSS can override it. -->
+  <link rel="stylesheet" href="touch-zoom-guard/touch-zoom-guard.css">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- No build step: an import map points the bare 'three' specifier at the vendored module build. -->
+  <script type="importmap">
+    { "imports": { "three": "./js/vendor/three.module.min.js" } }
+  </script>
+</head>
+<body>
+  <canvas id="game"></canvas>
+  <canvas id="overlay"></canvas>
+
+  <div id="hud" class="hidden">
+    <div class="hud-top">
+      <div class="pill" id="hud-time"><span class="lbl">TIME</span><span class="val">60</span></div>
+      <div id="nav" class="nav" aria-label="Direction to the nearest gem">
+        <svg id="nav-arrow" viewBox="-50 -50 100 100" width="58" height="58">
+          <circle r="46" class="ring"/>
+          <path d="M0,-36 L24,8 L8,4 L8,30 L-8,30 L-8,4 L-24,8 Z" class="arrow"/>
+        </svg>
+        <div class="nav-txt"><span>GEM</span><span id="nav-dist">--</span></div>
+      </div>
+      <div class="pill gems"><span class="lbl">GEMS</span><span class="val" id="hud-gems">0</span></div>
+    </div>
+    <div class="side">
+      <div class="meter"><span>BOOST</span><div class="bar v"><div id="boost-bar"></div></div></div>
+    </div>
+    <div id="toasts"></div>
+    <div class="corner-btns" data-touch-allow>
+      <button id="pause-btn" class="mini" aria-label="Pause">II</button>
+      <button id="mute-btn" class="mini" aria-label="Mute">♪</button>
+    </div>
+    <div class="pad" aria-label="Action buttons">
+      <button id="btn-boost" class="pbtn boost" aria-label="Boost">BOOST</button>
+    </div>
+  </div>
+
+  <div id="screen" class="screen" data-touch-allow>
+    <div class="card">
+      <h1>GEM<br><span>RUSH</span></h1>
+      <p class="tag">Grab gems before the clock runs out. Each gem buys time.</p>
+      <ul class="how">
+        <li><b>Left thumb</b> — drag anywhere on the left to steer (the stick floats under your thumb)</li>
+        <li><b>Right thumb</b> — hold <b>BOOST</b></li>
+        <li>The compass points to the nearest gem · bumpers bounce you</li>
+        <li>Desktop: WASD / arrows, Shift boost, P pause, M mute</li>
+      </ul>
+      <button id="start-btn">START</button>
+      <p class="small" id="best"></p>
+    </div>
+  </div>
+
+  <div class="tzg-hint zoom-hint">Pinch out to reset zoom</div>
+
+  <script src="touch-zoom-guard/touch-zoom-guard.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

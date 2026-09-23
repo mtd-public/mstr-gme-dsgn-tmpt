@@ -1,0 +1,614 @@
+/* Chunky toy UI, after gig-ambulance: cream cards with thick ink borders and
+   hard drop shadows on a lavender base, yellow for the one big action. */
+:root {
+  --ink: #3b2e5a;
+  --bg: #b9a3e8;
+  --lav: #dccbf7;
+  --purple: #6e5ac8;
+  --yellow: #ffd45e;
+  --orange: #ff9e4a;
+  --panel: #fffdf8;
+  --board-bg: #a6e3f6;
+  --line: var(--ink);
+  --text: var(--ink);
+  --muted: #7a6a9e;
+  --accent: #e8792a;
+  --btn-bg: #fffdf8;
+  --btn-bg-hover: #f3ecff;
+  --font-body: 'Trebuchet MS', 'Avenir Next', system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-body);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font-family: inherit;
+}
+
+.app {
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Topbar ---------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: env(safe-area-inset-top, 0px) 16px 0;
+  padding-top: calc(8px + env(safe-area-inset-top, 0px));
+  padding-bottom: 8px;
+  background: var(--lav);
+  border-bottom: 3px solid var(--ink);
+}
+
+.wordmark {
+  font-size: 22px;
+  font-weight: 900;
+  margin: 0;
+  line-height: 1;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  color: var(--purple);
+}
+
+.wordmark__accent {
+  color: var(--accent);
+}
+
+.topbar__stats {
+  display: flex;
+  gap: 16px;
+}
+
+/* A HUD pill, like the TIME and $ readouts in gig-ambulance. */
+.topbar__stat {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 2px 12px;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  background: var(--panel);
+  box-shadow: 0 3px 0 var(--ink);
+  font-size: 18px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.topbar__stat .stat__label {
+  font-size: 11px;
+}
+
+.topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---------- Keyboard help ---------- */
+.help {
+  position: relative;
+}
+
+.help__trigger {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 3px solid var(--ink);
+  background: var(--btn-bg);
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 3px 0 var(--ink);
+  transition: background 0.15s ease;
+}
+
+.help__trigger:hover,
+.help__trigger[aria-expanded='true'] {
+  background: var(--btn-bg-hover);
+}
+
+.help__trigger:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--ink);
+}
+
+.help__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 230px;
+  background: var(--panel);
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 5px 0 var(--ink);
+  z-index: 10;
+}
+
+.help__title {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.help__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.help__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.help__keys {
+  display: flex;
+  gap: 4px;
+  flex: none;
+}
+
+.help__key {
+  min-width: 22px;
+  padding: 2px 6px;
+  border-radius: 7px;
+  border: 2px solid var(--ink);
+  background: var(--lav);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+  box-shadow: 0 2px 0 var(--ink);
+}
+
+.help__label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+  text-align: right;
+}
+
+/* ---------- Layout ---------- */
+/* The topbar and footer keep their measured height; the play area is the only
+   thing that flexes, and min-height:0 lets it shrink rather than push the
+   footer past the bottom of the window. */
+.topbar,
+.footer-bar {
+  flex: none;
+}
+
+.layout {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+}
+
+.board-shell {
+  position: relative;
+  aspect-ratio: 1 / 2;
+  flex: 1;
+  min-height: 0;
+  max-height: 640px;
+  max-width: 94vw;
+  border: 4px solid var(--ink);
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--board-bg);
+  box-shadow: 0 8px 0 var(--ink);
+  /* Taps drive the splash here — don't let the browser scroll/zoom on them. */
+  touch-action: none;
+}
+
+/* ---------- Depth badge (sits on the board, every layout) ---------- */
+.depth-badge {
+  position: absolute;
+  top: calc(10px + env(safe-area-inset-top, 0px));
+  right: 10px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 3px 14px;
+  border-radius: 999px;
+  background: rgba(255, 253, 248, 0.93);
+  border: 3px solid var(--ink);
+  box-shadow: 0 4px 0 var(--ink);
+  pointer-events: none;
+}
+
+.depth-badge__label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.depth-badge__value {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--purple);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.game-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--board-bg);
+  cursor: pointer;
+  touch-action: none;
+}
+
+/* ---------- Stats sidebar (score/level/bonus + next preview). ---------- */
+.stats-sidebar {
+  background: var(--panel);
+  border: 3px solid var(--ink);
+  border-radius: 18px;
+  box-shadow: 0 5px 0 var(--ink);
+  padding: 14px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.stats-sidebar__section {
+  flex: none;
+  width: 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stats-sidebar__stats {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.stat__value--best {
+  font-size: 26px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Score and Words already show in the topbar on the compact strip. */
+.stat--duplicate {
+  display: none;
+}
+
+.stat__label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.stat__value {
+  font-size: 26px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
+}
+
+.btn {
+  border: 3px solid var(--ink);
+  background: var(--btn-bg);
+  color: var(--ink);
+  border-radius: 16px;
+  padding: 14px 0;
+  flex: 1;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--ink);
+  transition: background 0.15s ease, transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--ink);
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--btn-bg-hover);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.btn--ghost {
+  font-size: 13px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  box-shadow: 0 3px 0 var(--ink);
+  flex: none;
+}
+
+.btn--primary {
+  background: var(--yellow);
+  white-space: nowrap;
+  font-size: 20px;
+  padding: 12px 26px;
+  flex: none;
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: var(--yellow);
+  filter: brightness(1.05);
+}
+
+.footer-bar {
+  padding: 10px 16px calc(14px + env(safe-area-inset-bottom, 0px));
+  background: var(--lav);
+  border-top: 3px solid var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* The one action in the game — tapping the board does the same thing, but
+   this stays big and thumb-reachable for when the board is covered by the
+   overlay or the player just prefers a fixed button. */
+.btn--splash {
+  flex: 1;
+  font-size: 22px;
+  padding: 14px 0;
+  border-radius: 999px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ---------- Overlay ---------- */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 40%, rgba(233, 221, 255, 0.55), rgba(185, 163, 232, 0.85));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.overlay__card {
+  background: var(--panel);
+  border: 4px solid var(--ink);
+  border-radius: 22px;
+  box-shadow: 0 8px 0 var(--ink);
+  padding: 24px 22px 22px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 300px;
+}
+
+.overlay__card h2 {
+  margin: 0;
+  font-size: 38px;
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: 1px;
+  color: var(--purple);
+}
+
+.overlay__card p {
+  margin: 0;
+  color: var(--ink);
+  font-size: 14.5px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* ---------- Immersive portrait: phone and tablet held upright ----------
+   Everything below the topbar is board. Tapping the board splashes, and depth
+   rides in the badge, so the footer button and stats card have nothing left to
+   say — they come back only on the wide layout below. The two queries are
+   mutually exclusive (this one needs portrait or a narrow window; that one
+   needs landscape and a wide one), so source order between them is moot. */
+@media (orientation: portrait) and (pointer: coarse), (max-width: 839px) {
+  .layout {
+    padding: 0;
+    gap: 0;
+  }
+
+  .board-shell {
+    aspect-ratio: auto;
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: none;
+    max-height: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .stats-sidebar,
+  .footer-bar {
+    display: none;
+  }
+
+  .topbar {
+    gap: 8px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .wordmark {
+    font-size: 18px;
+  }
+
+  .topbar__stat {
+    padding: 1px 10px;
+    font-size: 16px;
+  }
+
+  .topbar__actions .btn--ghost {
+    padding: 6px 11px;
+  }
+}
+
+/* ---------- Wide layout: desktop and tablet landscape ----------
+   Both get the identical two-column arrangement — the game area centered
+   and as large as the window allows, and the next/score/level/bonus card
+   sized to its own content in the top right rather than stretched down the
+   column. Fills the window exactly, no page scroll. Gated on pointer:fine
+   for desktop, or pointer:coarse + landscape for tablet — a touch tablet in
+   landscape can easily be wider than 880px, so width alone can't tell it
+   apart from desktop. Footer bar (L / rotate / R) stays visible here too,
+   same as every other layout — desktop keyboard and mouse both still work. */
+@media (pointer: fine) and (min-width: 880px), (pointer: coarse) and (orientation: landscape) and (min-width: 840px) {
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 200px;
+    grid-template-rows: minmax(0, 1fr);
+    align-items: center;
+    justify-items: center;
+    gap: 16px;
+    min-height: 0;
+    padding: 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Height-driven, not width-driven: the board takes the row it is given and
+     derives its width from the aspect ratio, so a short landscape window
+     shrinks the board instead of pushing the footer out of view. */
+  .board-shell {
+    grid-column: 1;
+    grid-row: 1;
+    flex: none;
+    aspect-ratio: 1 / 2;
+    height: 100%;
+    width: auto;
+    max-height: 100%;
+    max-width: 100%;
+    border: 4px solid var(--ink);
+    border-radius: 22px;
+    box-shadow: 0 8px 0 var(--ink);
+  }
+
+  .depth-badge {
+    top: 10px;
+  }
+
+  .footer-bar {
+    display: flex;
+  }
+
+  .stats-sidebar {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    align-self: start;
+    width: 100%;
+    justify-self: stretch;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stats-sidebar__section {
+    width: auto;
+  }
+
+  .stats-sidebar__stats {
+    flex-direction: column;
+  }
+
+  .stat--duplicate {
+    display: flex;
+  }
+}
+
+/* ---------- Short landscape windows ----------
+   Phones and small tablets turned sideways have very little vertical room, so
+   the chrome tightens up to leave the board as much of it as possible. */
+@media (orientation: landscape) and (max-height: 560px) {
+  .layout {
+    padding: 10px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    gap: 10px;
+  }
+
+  .topbar {
+    padding-bottom: 6px;
+  }
+
+  .stats-sidebar {
+    padding: 10px;
+  }
+
+  .footer-bar {
+    padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .btn--splash {
+    padding: 10px 0;
+    font-size: 18px;
+  }
+}
+
+/* ---------- Very narrow phones ----------
+   The score pill drops its label so the Pause button still fits. */
+@media (max-width: 379px) {
+  .topbar__stat .stat__label {
+    display: none;
+  }
+
+  .wordmark {
+    font-size: 16px;
+  }
+}
